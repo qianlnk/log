@@ -1,0 +1,11 @@
+input:
+    type: redis
+    redis:
+        addr:     127.0.0.1:6379
+        listkey:  log-forwarder:xxx-log
+output:
+    type: redis
+    redis:
+        addr:     sh.xxxxx.com:6389
+        password: N^9j430i5poiasdff72GjSW90^fsdf13adMU3sodfq10764snbh^f32fdsYiDFAjd32sasfasdfdsfasfdadfafNJs34Us*Y4FdDE5Wlnb94301GWZasadfsdfDAP35145310^T
+        listkey:  logstash-xxx
