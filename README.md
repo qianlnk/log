@@ -41,3 +41,10 @@ time="2017-03-13T11:03:20+08:00" level=info msg=test pos={github.com/qianlnk/log
 time="2017-03-13T11:03:20+08:00" level=info msg="test fields" age=27 name=qianlnk pos={github.com/qianlnk/log/demo main.go main 16}
 time="2017-03-13T11:03:20+08:00" level=error msg="test error" pos={github.com/qianlnk/log/demo main.go main 17}
 ```
+
+### debug
+```
+./demo
+```
+
+![](debugdemo.png)
