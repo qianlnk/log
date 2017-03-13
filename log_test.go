@@ -22,5 +22,5 @@ func TestLog(t *testing.T) {
 }
 
 func TestRedis(t *testing.T) {
-	log.SetOutput()
+	//log.SetOutput()
 }

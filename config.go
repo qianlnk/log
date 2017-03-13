@@ -3,9 +3,6 @@ package log
 import (
 	"fmt"
 	"io"
-	"net/http"
-	"os"
-	"path"
 	"reflect"
 
 	rus "github.com/Sirupsen/logrus"
@@ -156,15 +153,4 @@ func GetFormatter() string {
 // SetOutput sets the output of the std logger.
 func SetOutput(o io.Writer) {
 	std.SetOutput(o)
-}
-
-// UserAgent Initialize User-Agent value for SetUA invoking
-var userAgent = func() string {
-	host, _ := os.Hostname()
-	return path.Base(os.Args[0]) + "/" + GetRelease() + " (Appcoach, " + host + ")"
-}()
-
-// SetUA  sets the User-Agentin http.Client to identify Appcoach service
-func SetUA(req *http.Request) {
-	req.Header.Set("User-Agent", userAgent)
 }

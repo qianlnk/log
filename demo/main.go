@@ -6,7 +6,7 @@ import (
 	"github.com/qianlnk/log"
 )
 
-//run it as: nohub ./demo > a &
+//run it as follow: nohub ./demo > a &
 func main() {
 	for {
 		log.Info("test")
