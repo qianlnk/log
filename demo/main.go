@@ -6,6 +6,14 @@ import (
 	"github.com/qianlnk/log"
 )
 
+var order map[string]string
+
+func init() {
+	order["mch_no"] = ""
+	order["trade_no"] = ""
+	order["order_fee"] = ""
+}
+
 //run it as follow: nohub ./demo > a &
 func main() {
 	for {
@@ -19,6 +27,15 @@ func main() {
 		test := make(map[string]interface{})
 		test["lala"] = "haha"
 		test["number"] = 123
-		log.Map(test).Info("testMap")
+		log.Fields{
+			"aaa": "aaa",
+			"bbb": "bbb",
+		}.Add(log.Fields{
+			"ddd": "ddd",
+			"eee": "eee",
+		}).Info("ccc")
+
+		log.Fields{}.Add(log.Fields(test)).Del("number", "lala").Info("bababaa")
+		log.Fields(test).Error("testErr")
 	}
 }
