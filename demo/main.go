@@ -6,16 +6,9 @@ import (
 	"github.com/qianlnk/log"
 )
 
-var order map[string]string
-
-func init() {
-	order["mch_no"] = ""
-	order["trade_no"] = ""
-	order["order_fee"] = ""
-}
-
 //run it as follow: nohub ./demo > a &
 func main() {
+	log.SetFormatter("text")
 	for {
 		log.Info("test")
 		log.Fields{
