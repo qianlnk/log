@@ -38,6 +38,22 @@ var (
 	fDebug = (*rus.Entry).Debug
 )
 
+func (d Fields) Add(val map[string]interface{}) Fields {
+	for k, v := range val {
+		d[k] = v
+	}
+
+	return d
+}
+
+func (d Fields) Del(keys ...string) Fields {
+	for _, k := range keys {
+		delete(d, k)
+	}
+
+	return d
+}
+
 // Panic logs at the panic level and then panic.
 func (d Fields) Panic(v ...interface{}) {
 	d.print(fPanic, 1, v)
