@@ -1,4 +1,4 @@
-package log // import "github.com/qianlnk/log"
+package log
 
 import (
 	"io"
@@ -65,6 +65,18 @@ func (l *logger) GetRelease() string {
 	return l.release
 }
 
+func (l *logger) SetPort(port int) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.daemon.Port = port
+}
+
+func (l *logger) GetPort() int {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	return l.daemon.Port
+}
+
 func (l *logger) SetOutput(w io.Writer) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
@@ -98,4 +110,11 @@ func (l *logger) startDaemon() {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	l.daemon.start()
+}
+
+func (l *logger) AddHook(hook rus.Hook) {
+	l.mu.Lock()
+	l.mu.Unlock()
+
+	l.l.Hooks.Add(hook)
 }

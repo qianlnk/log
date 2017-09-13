@@ -6,16 +6,31 @@ import (
 	"time"
 
 	"github.com/qianlnk/config"
+	"github.com/qianlnk/log/forwarder/redis"
 )
 
 type conf struct {
-	Input  ioConfig
-	Output ioConfig
+	Input  ioConfig `yaml:"input"  toml:"input"  json:"input"`
+	Output ioConfig `yaml:"output" toml:"output" json:"output"`
+}
+
+var defaultConf = conf{
+	Input: ioConfig{
+		Type: "redis",
+		Redis: redis.Config{
+			Addr:     "127.0.0.1:6379",
+			Password: "",
+			ListKey:  "log_key",
+		},
+	},
+	Output: ioConfig{
+		Type: "std",
+	},
 }
 
 func main() {
-	var conf conf
-	checkError(config.Parse(&conf))
+	var conf = defaultConf
+	checkError(config.Parse(&conf, "forwarder.yaml"))
 	forwarder, err := newForwarder(&conf)
 	checkError(err)
 	checkError(forwarder.Forward())

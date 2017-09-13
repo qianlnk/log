@@ -1,6 +1,7 @@
 package log
 
 import (
+	"fmt"
 	"path"
 	"runtime"
 	"strings"
@@ -20,6 +21,10 @@ type filePos struct {
 	File string `json:"file"`
 	Func string `json:"func"`
 	Line int    `json:"line"`
+}
+
+func (p filePos) String() string {
+	return fmt.Sprintf("%s %s %s %d", p.Pkg, p.File, p.Func, p.Line)
 }
 
 func getFilePos(skip int) filePos {

@@ -6,9 +6,14 @@ import (
 	"github.com/qianlnk/log"
 )
 
+//cmd to change level
+//echo -n "help" | nc -4t  -w1 127.0.0.1 8765
+
 //run it as follow: nohub ./demo > a &
 func main() {
 	log.SetFormatter("text")
+	log.StartDaemon()
+
 	for {
 		log.Info("test")
 		log.Fields{
@@ -29,6 +34,6 @@ func main() {
 		}).Info("ccc")
 
 		log.Fields{}.Add(log.Fields(test)).Del("number", "lala").Info("bababaa")
-		log.Fields(test).Error("testErr")
+		log.Fields(test).Purpose(log.PpsPerformance).Error("testErr")
 	}
 }

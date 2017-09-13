@@ -42,6 +42,12 @@ time="2017-03-13T11:03:20+08:00" level=info msg="test fields" age=27 name=qianln
 time="2017-03-13T11:03:20+08:00" level=error msg="test error" pos={github.com/qianlnk/log/demo main.go main 17}
 ```
 
+### Change log level
+
+```shell
+echo -n "help" | nc -4t  -w1 127.0.0.1 8765
+```
+
 ### debug
 ```
 ./demo

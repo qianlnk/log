@@ -7,9 +7,9 @@ import (
 )
 
 type Config struct {
-	Addr     string
-	Password string
-	ListKey  string
+	Addr     string `yaml:"addr"     toml:"addr"     json:"addr"`
+	Password string `yaml:"password" toml:"password" json:"password"`
+	ListKey  string `yaml:"list_key" toml:"list_key" json:"list_key"`
 }
 
 type Output struct {
@@ -27,9 +27,12 @@ func NewOutput(config *Config) (*Output, error) {
 				if err != nil {
 					return nil, err
 				}
-				if _, err := c.Do("AUTH", config.Password); err != nil {
-					c.Close()
-					return nil, err
+
+				if config.Password != "" {
+					if _, err := c.Do("AUTH", config.Password); err != nil {
+						c.Close()
+						return nil, err
+					}
 				}
 				return c, err
 			},

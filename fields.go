@@ -3,8 +3,16 @@ package log
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	rus "github.com/Sirupsen/logrus"
+)
+
+const (
+	//PpsPerformance log purpose for performance
+	PpsPerformance = "performance"
+	//PpsBusiness log purse for business
+	PpsBusiness = "business"
 )
 
 // Fields is used to define structured records for a log entry.
@@ -14,8 +22,20 @@ func (d Fields) print(f logFunc, skip int, v []interface{}) {
 	var msg interface{} = v
 	if len(v) == 1 {
 		msg = v[0]
+		if std.GetLevel() == DebugLevel {
+			if strmsg, ok := msg.(string); ok {
+				strmsg = strings.Replace(strmsg, "\n", " ", -1)
+				strmsg = strings.Replace(strmsg, "\t", "", -1)
+				msg = strmsg
+			}
+		}
 	}
-	d["pos"] = getFilePos(skip + 1)
+	d["pos"] = getFilePos(skip + 1).String()
+	//log purpose default "business"
+	if _, ok := d["purpose"]; !ok {
+		d["purpose"] = PpsBusiness
+	}
+
 	if GetMode() == Production {
 		d["process"] = os.Args[0]
 		d["release"] = std.GetRelease()
@@ -38,19 +58,48 @@ var (
 	fDebug = (*rus.Entry).Debug
 )
 
-func (d Fields) Add(val map[string]interface{}) Fields {
-	for k, v := range val {
-		d[k] = v
+//Fields add newfields as k, v, k, v ...
+//usage:
+//	logf := log.Fields{"job_id": "10001"}
+//	logf.Fields(
+//		"fieldname1", fieldvalue1,
+//		"fieldname2", fieldvalue2,
+//		"fieldname3", fieldvalue3,
+//	)
+func (d Fields) Fields(kvs ...interface{}) Fields {
+	for i := 0; i <= len(kvs)-2; i += 2 {
+		kv, ok := kvs[i].(string)
+		if !ok {
+			return d
+		}
+
+		d[kv] = kvs[i+1]
 	}
 
 	return d
 }
 
+//Add add newfields to fields and return all fields
+func (d Fields) Add(fields Fields) Fields {
+	for field, value := range fields {
+		d[field] = value
+	}
+
+	return d
+}
+
+//Del fields from Fields by keys
 func (d Fields) Del(keys ...string) Fields {
 	for _, k := range keys {
 		delete(d, k)
 	}
 
+	return d
+}
+
+//Purpose flag log's purpose
+func (d Fields) Purpose(pps string) Fields {
+	d["purpose"] = pps
 	return d
 }
 

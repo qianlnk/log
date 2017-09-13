@@ -17,7 +17,7 @@ type daemon struct {
 }
 
 func (d *daemon) start() {
-	c, err := net.Listen("tcp", "127.0.0.1:0")
+	c, err := net.Listen("tcp", fmt.Sprintf("127.0.0.1:%d", d.Port))
 	if err != nil {
 		panic(err)
 	}
@@ -68,14 +68,15 @@ func (d chatter) chat() {
 		}
 		switch cmd {
 		case "help":
-			d.help()
+			//d.help()
+			return
 		case "quit":
 			d.c.Close()
 			return
 		case "show":
 			switch para {
 			case "level":
-				d.echo(GetLevel().String())
+				d.echo("current level:" + GetLevel().String())
 			default:
 				d.unsupported(line)
 			}
@@ -83,16 +84,22 @@ func (d chatter) chat() {
 			switch para {
 			case "panic":
 				std.SetLevel(PanicLevel)
+				d.echo("change log level to panic")
 			case "fatal":
 				std.SetLevel(FatalLevel)
+				d.echo("change log level to fatal")
 			case "error":
 				std.SetLevel(ErrorLevel)
+				d.echo("change log level to error")
 			case "warn":
 				std.SetLevel(WarnLevel)
+				d.echo("change log level to warn")
 			case "info":
 				std.SetLevel(InfoLevel)
+				d.echo("change log level to info")
 			case "debug":
 				std.SetLevel(DebugLevel)
+				d.echo("change log level to debug")
 			default:
 				d.unsupported(line)
 			}
@@ -114,17 +121,20 @@ func (d chatter) echo(s string) {
 	fmt.Fprintln(d.c, s)
 }
 
+//help always show help
 func (d chatter) help() {
 	d.echo(`
-Log Daemon Usage:
-
-quit
-    quit the session.
-show level
-    print the current level.
-level (panic|fatal|error|warn|info|debug)
-    change the current level.
-help
-    print the help message.
++-----------------------------------------------+
+| Log Daemon Usage:                             |
+|                                               |
+| quit                                          |
+|     quit the session.                         |
+| show level                                    |
+|     print the current level.                  |
+| level (panic|fatal|error|warn|info|debug)     |
+|     change the current level.                 |
+| help                                          |
+|     print the help message.                   |
++-----------------------------------------------+ 
 `)
 }

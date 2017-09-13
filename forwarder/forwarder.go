@@ -3,8 +3,8 @@ package main
 import "github.com/qianlnk/log/forwarder/redis"
 
 type ioConfig struct {
-	Type  string
-	Redis redis.Config
+	Type  string       `yaml:"type"  toml:"type"  json:"type"`
+	Redis redis.Config `yaml:"redis" toml:"redis" toml:"redis"`
 }
 
 type input interface {

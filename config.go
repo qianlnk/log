@@ -3,6 +3,8 @@ package log
 import (
 	"fmt"
 	"io"
+	"os"
+	"path/filepath"
 	"reflect"
 
 	rus "github.com/Sirupsen/logrus"
@@ -140,6 +142,16 @@ func GetRelease() string {
 	return std.GetRelease()
 }
 
+//SetPort set the log deamon port for tcp connect
+func SetPort(port int) {
+	std.SetPort(port)
+}
+
+//GetPort returns the log deamon port
+func GetPort() int {
+	return std.GetPort()
+}
+
 // SetFormatter sets the standard logger formatter.
 // Options: logstash, json, text.
 func SetFormatter(formatter string) {
@@ -153,4 +165,29 @@ func GetFormatter() string {
 // SetOutput sets the output of the std logger.
 func SetOutput(o io.Writer) {
 	std.SetOutput(o)
+}
+
+//SetOutputPath sets the output file of the std logger
+func SetOutputPath(path string) error {
+	if len(path) <= 0 {
+		return nil
+	}
+
+	if err := os.MkdirAll(filepath.Dir(path), os.FileMode(0755)); err != nil {
+		return err
+	}
+
+	log, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		return err
+	}
+
+	std.SetOutput(log)
+	return nil
+}
+
+type Hook rus.Hook
+
+func AddHook(hook Hook) {
+	std.AddHook(hook)
 }

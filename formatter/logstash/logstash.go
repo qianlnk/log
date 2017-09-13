@@ -1,8 +1,10 @@
 package logstash
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/Sirupsen/logrus"
 )
@@ -20,7 +22,7 @@ func (f *LogstashFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	entry.Data["@version"] = 1
 
 	if f.TimestampFormat == "" {
-		f.TimestampFormat = logrus.DefaultTimestampFormat
+		f.TimestampFormat = time.RFC3339Nano
 	}
 
 	entry.Data["@timestamp"] = entry.Time.Format(f.TimestampFormat)
@@ -52,5 +54,13 @@ func (f *LogstashFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Failed to marshal %#v to JSON (%v)", entry.Data, err)
 	}
-	return append(serialized, '\n'), nil
+	dst := recoverSpecialChar(serialized)
+	return append(dst, '\n'), nil
+}
+
+func recoverSpecialChar(src []byte) []byte {
+	dst := bytes.Replace(src, []byte("\\u003c"), []byte("<"), -1)
+	dst = bytes.Replace(dst, []byte("\\u003e"), []byte(">"), -1)
+	dst = bytes.Replace(dst, []byte("\\u0026"), []byte("&"), -1)
+	return dst
 }
